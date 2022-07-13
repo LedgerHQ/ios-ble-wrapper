@@ -6,8 +6,8 @@
 
 import Foundation
 
-public class BleWrapper {
-    func parseBuffer(dict: [String: AnyObject]) -> [UInt8] {
+open class BleWrapper {
+    open func parseBuffer(dict: [String: AnyObject]) -> [UInt8] {
         var dataTuple = [(pos: Int, value: UInt8)]()
         for item in dict {
             /// We only keep the byte items
