@@ -25,7 +25,7 @@ open class BleWrapper {
         return dataTuple.map({ $0.value })
     }
     
-    func log(_ items: Any...) {
+    open func log(_ items: Any...) {
         let stringToLog = (items.compactMap({ "\($0)" }).joined(separator: " "))
         if #available(iOS 14.0, *) {
             let logger = Logger(subsystem: "com.LedgerHQ", category: "ios-ble-wrapper")
