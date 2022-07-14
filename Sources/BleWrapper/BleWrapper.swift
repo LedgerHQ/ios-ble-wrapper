@@ -5,6 +5,7 @@
 //
 
 import Foundation
+import os
 
 open class BleWrapper {
     
@@ -22,5 +23,16 @@ open class BleWrapper {
         }
         dataTuple.sort(by: { A, B in A.pos < B.pos })
         return dataTuple.map({ $0.value })
+    }
+    
+    func log(_ items: Any...) {
+        let stringToLog = (items.compactMap({ "\($0)" }).joined(separator: " "))
+        if #available(iOS 14.0, *) {
+            let logger = Logger(subsystem: "com.LedgerHQ", category: "ios-ble-wrapper")
+            logger.log("\(stringToLog)")
+        } else {
+            let log = OSLog.init(subsystem: "com.LedgerHQ", category: "ios-ble-wrapper")
+            os_log("%s", log: log, stringToLog)
+        }
     }
 }
