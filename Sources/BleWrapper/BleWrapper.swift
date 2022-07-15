@@ -5,7 +5,15 @@
 //
 
 import Foundation
+import BleTransport
 import os
+import JavaScriptCore
+
+public typealias EmptyResponse = (()->())
+public typealias DictionaryResponse = (([AnyHashable: Any])->())
+public typealias StringResponse = ((String)->())
+public typealias JSValueResponse = ((JSValue)->())
+public typealias ErrorResponse = ((BleTransportError)->())
 
 open class BleWrapper {
     
@@ -34,5 +42,17 @@ open class BleWrapper {
             let log = OSLog.init(subsystem: "com.LedgerHQ", category: "ios-ble-wrapper")
             os_log("%s", log: log, stringToLog)
         }
+    }
+    
+    open func closeApp(success: @escaping EmptyResponse, failure: @escaping ErrorResponse) {
+        let apdu = APDU(data: [0xb0, 0xa7, 0x00, 0x00])
+        BleTransport.shared.send(apdu: apdu) {
+            success()
+        } failure: { error in
+            if let error = error {
+                failure(error)
+            }
+        }
+
     }
 }
