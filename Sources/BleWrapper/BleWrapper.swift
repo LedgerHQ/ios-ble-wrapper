@@ -13,7 +13,6 @@ public typealias EmptyResponse = (()->())
 public typealias DictionaryResponse = (([AnyHashable: Any])->())
 public typealias StringResponse = ((String)->())
 public typealias JSValueResponse = ((JSValue)->())
-public typealias ErrorResponse = ((BleTransportError)->())
 
 open class BleWrapper {
     
@@ -53,9 +52,7 @@ open class BleWrapper {
         BleTransport.shared.send(apdu: apdu) {
             success()
         } failure: { error in
-            if let error = error {
-                failure(error)
-            }
+            failure(error)
         }
     }
     
@@ -64,9 +61,7 @@ open class BleWrapper {
         BleTransport.shared.send(apdu: apdu) {
             success()
         } failure: { error in
-            if let error = error {
-                failure(error)
-            }
+            failure(error)
         }
     }
 }
