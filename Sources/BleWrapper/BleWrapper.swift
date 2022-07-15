@@ -49,19 +49,25 @@ open class BleWrapper {
         data.append(UInt8(nameData.count))
         data.append(contentsOf: nameData)
         let apdu = APDU(data: data)
-        BleTransport.shared.send(apdu: apdu) {
-            success()
-        } failure: { error in
-            failure(error)
+        BleTransport.shared.exchange(apdu: apdu) { result in
+            switch result {
+            case .success(_):
+                success()
+            case .failure(let error):
+                failure(error)
+            }
         }
     }
     
     open func closeApp(success: @escaping EmptyResponse, failure: @escaping ErrorResponse) {
         let apdu = APDU(data: [0xb0, 0xa7, 0x00, 0x00])
-        BleTransport.shared.send(apdu: apdu) {
-            success()
-        } failure: { error in
-            failure(error)
+        BleTransport.shared.exchange(apdu: apdu) { result in
+            switch result {
+            case .success(_):
+                success()
+            case .failure(let error):
+                failure(error)
+            }
         }
     }
 }
