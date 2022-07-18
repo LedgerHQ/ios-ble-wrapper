@@ -98,7 +98,7 @@ open class BleWrapper {
         }
     }
     
-    public func openAppIfNeeded(name: String) async throws {
+    public func openAppIfNeeded(_ name: String) async throws {
         return try await withCheckedThrowingContinuation { continuation in
             openAppIfNeeded(name) { result in
                 switch result {
