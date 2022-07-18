@@ -22,7 +22,7 @@ open class BleWrapper {
                 if let openAppWithNameWhenConnectedAgain = openAppWithNameWhenConnectedAgain {
                     Task() {
                         do {
-                            try await openApp(name: openAppWithNameWhenConnectedAgain)
+                            try await openApp(openAppWithNameWhenConnectedAgain)
                             openAppIfNeededCompletion?(.success(()))
                         } catch {
                             if let error = error as? BleTransportError {
@@ -67,10 +67,10 @@ open class BleWrapper {
     }
     
     // MARK: - Async methods
-    open func openApp(name: String) async throws {
+    open func openApp(_ name: String) async throws {
         openAppWithNameWhenConnectedAgain = nil
         return try await withCheckedThrowingContinuation { continuation in
-            openApp(name: name) {
+            openApp(name) {
                 continuation.resume()
             } failure: { error in
                 continuation.resume(throwing: error)
@@ -112,7 +112,7 @@ open class BleWrapper {
     }
     
     // MARK: - Completion methods
-    public func openApp(name: String, success: @escaping EmptyResponse, failure: @escaping ErrorResponse) {
+    public func openApp(_ name: String, success: @escaping EmptyResponse, failure: @escaping ErrorResponse) {
         let nameData = Data(name.utf8)
         var data: [UInt8] = [0xe0, 0xd8, 0x00, 0x00]
         data.append(UInt8(nameData.count))
@@ -176,7 +176,7 @@ open class BleWrapper {
                 let currentAppInfo = try await getAppAndVersion()
                 if currentAppInfo.name != name {
                     if currentAppInfo.name == "BOLOS" {
-                        try await openApp(name: name)
+                        try await openApp(name)
                         completion(.success(()))
                     } else {
                         openAppWithNameWhenConnectedAgain = name
