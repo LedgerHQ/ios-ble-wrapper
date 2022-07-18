@@ -64,10 +64,10 @@ open class BleWrapper {
         }
     }
     
-    open func openApp() async throws {
+    open func openApp(name: String) async throws {
         openAppWhenConnectedAgain = false
         return try await withCheckedThrowingContinuation { continuation in
-            openApp(name: "Solana") {
+            openApp(name: name) {
                 continuation.resume()
             } failure: { error in
                 continuation.resume(throwing: error)
