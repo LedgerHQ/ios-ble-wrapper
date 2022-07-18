@@ -66,6 +66,7 @@ open class BleWrapper {
         }
     }
     
+    // MARK: - Async methods
     open func openApp(name: String) async throws {
         openAppWithNameWhenConnectedAgain = nil
         return try await withCheckedThrowingContinuation { continuation in
@@ -110,8 +111,8 @@ open class BleWrapper {
         }
     }
     
-    // MARK: - Private methods
-    private func openApp(name: String, success: @escaping EmptyResponse, failure: @escaping ErrorResponse) {
+    // MARK: - Completion methods
+    public func openApp(name: String, success: @escaping EmptyResponse, failure: @escaping ErrorResponse) {
         let nameData = Data(name.utf8)
         var data: [UInt8] = [0xe0, 0xd8, 0x00, 0x00]
         data.append(UInt8(nameData.count))
@@ -127,7 +128,7 @@ open class BleWrapper {
         }
     }
     
-    private func closeApp(success: @escaping EmptyResponse, failure: @escaping ErrorResponse) {
+    public func closeApp(success: @escaping EmptyResponse, failure: @escaping ErrorResponse) {
         let apdu = APDU(data: [0xb0, 0xa7, 0x00, 0x00])
         BleTransport.shared.exchange(apdu: apdu) { result in
             switch result {
@@ -139,7 +140,7 @@ open class BleWrapper {
         }
     }
     
-    private func getAppAndVersion(success: @escaping ((AppInfo)->()), failure: @escaping ErrorResponse) {
+    public func getAppAndVersion(success: @escaping ((AppInfo)->()), failure: @escaping ErrorResponse) {
         let apdu = APDU(data: [0xb0, 0x01, 0x00, 0x00])
         BleTransport.shared.exchange(apdu: apdu) { result in
             switch result {
@@ -169,7 +170,7 @@ open class BleWrapper {
         }
     }
     
-    private func openAppIfNeeded(_ name: String, completion: @escaping (Result<Void, BleTransportError>) -> Void) {
+    public func openAppIfNeeded(_ name: String, completion: @escaping (Result<Void, BleTransportError>) -> Void) {
         Task() {
             do {
                 let currentAppInfo = try await getAppAndVersion()
