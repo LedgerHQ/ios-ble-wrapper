@@ -18,14 +18,16 @@ open class BleWrapper {
     
     public var bleConnected = false {
         didSet {
-            if bleConnected && openAppWhenConnectedAgain {
-                Task() {
-                    do {
-                        try await openApp()
-                        openAppIfNeededCompletion?(.success(()))
-                    } catch {
-                        if let error = error as? BleTransportError {
-                            openAppIfNeededCompletion?(.failure(error))
+            if bleConnected {
+                if let openAppWithNameWhenConnectedAgain = openAppWithNameWhenConnectedAgain {
+                    Task() {
+                        do {
+                            try await openApp(name: openAppWithNameWhenConnectedAgain)
+                            openAppIfNeededCompletion?(.success(()))
+                        } catch {
+                            if let error = error as? BleTransportError {
+                                openAppIfNeededCompletion?(.failure(error))
+                            }
                         }
                     }
                 }
@@ -33,7 +35,7 @@ open class BleWrapper {
         }
     }
     
-    var openAppWhenConnectedAgain = false
+    var openAppWithNameWhenConnectedAgain: String?
     var openAppIfNeededCompletion: ((Result<Void, BleTransportError>) -> Void)? = nil
     
     public init() {
@@ -65,7 +67,7 @@ open class BleWrapper {
     }
     
     open func openApp(name: String) async throws {
-        openAppWhenConnectedAgain = false
+        openAppWithNameWhenConnectedAgain = nil
         return try await withCheckedThrowingContinuation { continuation in
             openApp(name: name) {
                 continuation.resume()
@@ -173,10 +175,10 @@ open class BleWrapper {
                 let currentAppInfo = try await getAppAndVersion()
                 if currentAppInfo.name != name {
                     if currentAppInfo.name == "BOLOS" {
-                        try await openApp()
+                        try await openApp(name: name)
                         completion(.success(()))
                     } else {
-                        openAppWhenConnectedAgain = true
+                        openAppWithNameWhenConnectedAgain = name
                         openAppIfNeededCompletion = completion
                         try await closeApp()
                     }
