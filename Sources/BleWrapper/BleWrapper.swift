@@ -15,7 +15,7 @@ public typealias StringResponse = ((String)->())
 public typealias JSValueResponse = ((JSValue)->())
 
 public protocol BleConnectionDelegate {
-    func create(success: EmptyResponse?, failure: ErrorResponse?)
+    func createAgainAfterDisconnect(success: EmptyResponse, failure: ErrorResponse)
 }
 
 open class BleWrapper {
@@ -127,7 +127,7 @@ open class BleWrapper {
         BleTransport.shared.exchange(apdu: apdu) { [weak self] result in
             switch result {
             case .success(_):
-                self?.connectionDelegate.create {
+                self?.connectionDelegate.createAgainAfterDisconnect {
                     success()
                 } failure: { error in
                     failure(error)
@@ -143,7 +143,7 @@ open class BleWrapper {
         BleTransport.shared.exchange(apdu: apdu) { [weak self] result in
             switch result {
             case .success(_):
-                self?.connectionDelegate.create {
+                self?.connectionDelegate.createAgainAfterDisconnect {
                     success()
                 } failure: { error in
                     failure(error)
