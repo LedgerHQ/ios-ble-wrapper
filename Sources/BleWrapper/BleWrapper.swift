@@ -15,7 +15,7 @@ public typealias StringResponse = ((String)->())
 public typealias JSValueResponse = ((JSValue)->())
 
 public protocol BleConnectionDelegate {
-    func createAgainAfterDisconnect(success: EmptyResponse, failure: ErrorResponse)
+    func createAgainAfterDisconnect(success: @escaping EmptyResponse, failure: @escaping ErrorResponse)
 }
 
 open class BleWrapper {
