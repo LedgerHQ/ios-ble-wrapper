@@ -20,28 +20,6 @@ public protocol BleConnectionDelegate {
 
 open class BleWrapper {
     
-    /*public var bleConnected = false {
-        didSet {
-            if bleConnected {
-                if let openAppWithNameWhenConnectedAgain = openAppWithNameWhenConnectedAgain {
-                    Task() {
-                        do {
-                            try await openApp(openAppWithNameWhenConnectedAgain)
-                            openAppIfNeededCompletion?(.success(()))
-                        } catch {
-                            if let error = error as? BleTransportError {
-                                openAppIfNeededCompletion?(.failure(error))
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }*/
-    
-    //var openAppWithNameWhenConnectedAgain: String?
-    //var openAppIfNeededCompletion: ((Result<Void, BleTransportError>) -> Void)? = nil
-    
     var connectionDelegate: BleConnectionDelegate
     
     public init(connectionDelegate: BleConnectionDelegate) {
@@ -193,8 +171,6 @@ open class BleWrapper {
                         try await openApp(name)
                         completion(.success(()))
                     } else {
-                        //openAppWithNameWhenConnectedAgain = name
-                        //openAppIfNeededCompletion = completion
                         try await closeApp()
                         try await openApp(name)
                         completion(.success(()))
