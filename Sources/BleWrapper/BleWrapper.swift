@@ -14,9 +14,13 @@ public typealias DictionaryResponse = (([AnyHashable: Any])->())
 public typealias StringResponse = ((String)->())
 public typealias JSValueResponse = ((JSValue)->())
 
+public protocol BleConnectionDelegate {
+    func create(success: EmptyResponse?, failure: ErrorResponse?)
+}
+
 open class BleWrapper {
     
-    public var bleConnected = false {
+    /*public var bleConnected = false {
         didSet {
             if bleConnected {
                 if let openAppWithNameWhenConnectedAgain = openAppWithNameWhenConnectedAgain {
@@ -33,13 +37,15 @@ open class BleWrapper {
                 }
             }
         }
-    }
+    }*/
     
-    var openAppWithNameWhenConnectedAgain: String?
-    var openAppIfNeededCompletion: ((Result<Void, BleTransportError>) -> Void)? = nil
+    //var openAppWithNameWhenConnectedAgain: String?
+    //var openAppIfNeededCompletion: ((Result<Void, BleTransportError>) -> Void)? = nil
     
-    public init() {
-        
+    var connectionDelegate: BleConnectionDelegate
+    
+    public init(connectionDelegate: BleConnectionDelegate) {
+        self.connectionDelegate = connectionDelegate
     }
     
     // MARK: - Open methods
@@ -68,7 +74,7 @@ open class BleWrapper {
     
     // MARK: - Async methods
     open func openApp(_ name: String) async throws {
-        openAppWithNameWhenConnectedAgain = nil
+        //openAppWithNameWhenConnectedAgain = nil
         return try await withCheckedThrowingContinuation { continuation in
             openApp(name) {
                 continuation.resume()
@@ -118,10 +124,14 @@ open class BleWrapper {
         data.append(UInt8(nameData.count))
         data.append(contentsOf: nameData)
         let apdu = APDU(data: data)
-        BleTransport.shared.exchange(apdu: apdu) { result in
+        BleTransport.shared.exchange(apdu: apdu) { [weak self] result in
             switch result {
             case .success(_):
-                success()
+                self?.connectionDelegate.create {
+                    success()
+                } failure: { error in
+                    failure(error)
+                }
             case .failure(let error):
                 failure(error)
             }
@@ -130,10 +140,14 @@ open class BleWrapper {
     
     public func closeApp(success: @escaping EmptyResponse, failure: @escaping ErrorResponse) {
         let apdu = APDU(data: [0xb0, 0xa7, 0x00, 0x00])
-        BleTransport.shared.exchange(apdu: apdu) { result in
+        BleTransport.shared.exchange(apdu: apdu) { [weak self] result in
             switch result {
             case .success(_):
-                success()
+                self?.connectionDelegate.create {
+                    success()
+                } failure: { error in
+                    failure(error)
+                }
             case .failure(let error):
                 failure(error)
             }
@@ -179,9 +193,11 @@ open class BleWrapper {
                         try await openApp(name)
                         completion(.success(()))
                     } else {
-                        openAppWithNameWhenConnectedAgain = name
-                        openAppIfNeededCompletion = completion
+                        //openAppWithNameWhenConnectedAgain = name
+                        //openAppIfNeededCompletion = completion
                         try await closeApp()
+                        try await openApp(name)
+                        completion(.success(()))
                     }
                 } else {
                     completion(.success(()))
