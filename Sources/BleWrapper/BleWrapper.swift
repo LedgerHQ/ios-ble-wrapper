@@ -23,6 +23,8 @@ public enum BleWrapperError: Error {
     case userRejected
     case appNotAvailableInDevice
     case noStatus
+    case formatNotSupported
+    case couldNotParseResponseData
     case unknown
 }
 
@@ -154,7 +156,7 @@ open class BleWrapper {
                 var i = 0
                 let format = data[i]
                 if format != 1 {
-                    failure(BleTransportError.lowerLevelError(description: "getAppAndVersion: format not supported"))
+                    failure(BleWrapperError.formatNotSupported)
                     return
                 }
                 i += 1
@@ -166,8 +168,8 @@ open class BleWrapper {
                 i += 1
                 let versionData = data[i..<i+Int(versionLength)]
                 i += versionLength
-                guard let name = String(data: Data(nameData), encoding: .ascii) else { failure(BleTransportError.lowerLevelError(description: "Couldn't parse name")); return }
-                guard let version = String(data: Data(versionData), encoding: .ascii) else { failure(BleTransportError.lowerLevelError(description: "Couldn't parse version")); return }
+                guard let name = String(data: Data(nameData), encoding: .ascii) else { failure(BleWrapperError.couldNotParseResponseData); return }
+                guard let version = String(data: Data(versionData), encoding: .ascii) else { failure(BleWrapperError.couldNotParseResponseData); return }
                 success(AppInfo(name: name, version: version))
             case .failure(let error):
                 failure(error)
@@ -175,7 +177,7 @@ open class BleWrapper {
         }
     }
     
-    public func openAppIfNeeded(_ name: String, completion: @escaping (Result<Void, BleTransportError>) -> Void) {
+    public func openAppIfNeeded(_ name: String, completion: @escaping (Result<Void, Error>) -> Void) {
         Task() {
             do {
                 let currentAppInfo = try await getAppAndVersion()
@@ -192,9 +194,7 @@ open class BleWrapper {
                     completion(.success(()))
                 }
             } catch {
-                if let error = error as? BleTransportError {
-                    completion(.failure(error))
-                }
+                completion(.failure(error))
             }
         }
     }
