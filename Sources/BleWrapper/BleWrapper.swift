@@ -13,9 +13,17 @@ public typealias EmptyResponse = (()->())
 public typealias DictionaryResponse = (([AnyHashable: Any])->())
 public typealias StringResponse = ((String)->())
 public typealias JSValueResponse = ((JSValue)->())
+public typealias ErrorResponse = ((Error)->())
 
 public protocol BleConnectionDelegate {
     func createAgainAfterDisconnect(success: @escaping EmptyResponse, failure: @escaping ErrorResponse)
+}
+
+public enum BleWrapperError: Error {
+    case userRejected
+    case appNotAvailableInDevice
+    case noStatus
+    case unknown
 }
 
 open class BleWrapper {
@@ -97,6 +105,7 @@ open class BleWrapper {
     
     // MARK: - Completion methods
     public func openApp(_ name: String, success: @escaping EmptyResponse, failure: @escaping ErrorResponse) {
+        let errorCodes: [BleWrapperError: [String]] = [.userRejected: ["6985", "5501"], .appNotAvailableInDevice: ["6984", "6807"]]
         let nameData = Data(name.utf8)
         var data: [UInt8] = [0xe0, 0xd8, 0x00, 0x00]
         data.append(UInt8(nameData.count))
@@ -104,11 +113,15 @@ open class BleWrapper {
         let apdu = APDU(data: data)
         BleTransport.shared.exchange(apdu: apdu) { [weak self] result in
             switch result {
-            case .success(_):
-                self?.connectionDelegate.createAgainAfterDisconnect {
-                    success()
-                } failure: { error in
+            case .success(let response):
+                if let error = self?.parseStatus(response: response, errorCodes: errorCodes) {
                     failure(error)
+                } else {
+                    self?.connectionDelegate.createAgainAfterDisconnect {
+                        success()
+                    } failure: { error in
+                        failure(error)
+                    }
                 }
             case .failure(let error):
                 failure(error)
@@ -183,6 +196,23 @@ open class BleWrapper {
                     completion(.failure(error))
                 }
             }
+        }
+    }
+    
+    fileprivate func parseStatus(response: String, errorCodes: [BleWrapperError: [String]]) -> BleWrapperError? {
+        let status = response.suffix(4)
+        if status.count == 4 {
+            if status == "9000" {
+                return nil
+            } else {
+                if let error = errorCodes.first(where: { $0.value.contains(String(status)) })?.key {
+                    return error
+                } else {
+                    return .unknown
+                }
+            }
+        } else {
+            return .noStatus
         }
     }
 }
