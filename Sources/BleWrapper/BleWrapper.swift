@@ -6,6 +6,13 @@
 
 import Foundation
 import os
+import JavaScriptCore
+
+public typealias EmptyResponse = (()->())
+public typealias DictionaryResponse = (([AnyHashable: Any])->())
+public typealias StringResponse = ((String)->())
+public typealias JSValueResponse = ((JSValue)->())
+public typealias ErrorResponse = ((Error)->())
 
 open class BleWrapper {
     
