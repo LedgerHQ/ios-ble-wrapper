@@ -7,6 +7,7 @@
 import Foundation
 import os
 import JavaScriptCore
+import BleTransport
 
 public typealias EmptyResponse = (()->())
 public typealias DictionaryResponse = (([AnyHashable: Any])->())
@@ -42,5 +43,17 @@ open class BleWrapper {
             let log = OSLog.init(subsystem: "com.LedgerHQ", category: "ios-ble-wrapper")
             os_log("%s", log: log, stringToLog)
         }
+    }
+    
+    open func openAppIfNeeded(_ name: String, completion: @escaping (Result<Void, Error>) -> Void) {
+        BleTransport.shared.openAppIfNeeded(name, completion: completion)
+    }
+    
+    open func closeApp(success: @escaping EmptyResponse, failure: @escaping ErrorResponse) {
+        BleTransport.shared.closeApp(success: success, failure: failure)
+    }
+    
+    open func getAppAndVersion(success: @escaping ((AppInfo) -> ()), failure: @escaping ErrorResponse) {
+        BleTransport.shared.getAppAndVersion(success: success, failure: failure)
     }
 }
