@@ -57,3 +57,18 @@ open class BleWrapper {
         BleTransport.shared.getAppAndVersion(success: success, failure: failure)
     }
 }
+
+/// Async implementations
+extension BleWrapper {
+    open func openAppIfNeeded(_ name: String) async throws {
+        return try await BleTransport.shared.openAppIfNeeded(name)
+    }
+    
+    open func closeApp() async throws {
+        return try await BleTransport.shared.closeApp()
+    }
+    
+    open func getAppAndVersion() async throws -> AppInfo {
+        return try await BleTransport.shared.getAppAndVersion()
+    }
+}
