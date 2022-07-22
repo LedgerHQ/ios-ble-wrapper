@@ -49,10 +49,6 @@ open class BleWrapper {
         BleTransport.shared.openAppIfNeeded(name, completion: completion)
     }
     
-    open func closeApp(success: @escaping EmptyResponse, failure: @escaping ErrorResponse) {
-        BleTransport.shared.closeApp(success: success, failure: failure)
-    }
-    
     open func getAppAndVersion(success: @escaping ((AppInfo) -> ()), failure: @escaping ErrorResponse) {
         BleTransport.shared.getAppAndVersion(success: success, failure: failure)
     }
@@ -62,10 +58,6 @@ open class BleWrapper {
 extension BleWrapper {
     open func openAppIfNeeded(_ name: String) async throws {
         return try await BleTransport.shared.openAppIfNeeded(name)
-    }
-    
-    open func closeApp() async throws {
-        return try await BleTransport.shared.closeApp()
     }
     
     open func getAppAndVersion() async throws -> AppInfo {
