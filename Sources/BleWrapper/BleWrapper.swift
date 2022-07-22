@@ -21,8 +21,7 @@ open class BleWrapper {
         
     }
     
-    // MARK: - Open methods
-    open func parseBuffer(dict: [String: AnyObject]) -> [UInt8] {
+    public func parseBuffer(dict: [String: AnyObject]) -> [UInt8] {
         var dataTuple = [(pos: Int, value: UInt8)]()
         for item in dict {
             /// We only keep the byte items
@@ -34,7 +33,7 @@ open class BleWrapper {
         return dataTuple.map({ $0.value })
     }
     
-    open func log(_ items: Any...) {
+    public func log(_ items: Any...) {
         let stringToLog = (items.compactMap({ "\($0)" }).joined(separator: " "))
         if #available(iOS 14.0, *) {
             let logger = Logger(subsystem: "com.LedgerHQ", category: "ios-ble-wrapper")
@@ -51,6 +50,10 @@ open class BleWrapper {
     
     open func getAppAndVersion(success: @escaping ((AppInfo) -> ()), failure: @escaping ErrorResponse) {
         BleTransport.shared.getAppAndVersion(success: success, failure: failure)
+    }
+    
+    public func jsValueAsError(_ jsValue: JSValue) -> Error {
+        return BridgeError.fromJSValue(jsValue)
     }
 }
 
