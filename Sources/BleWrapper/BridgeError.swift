@@ -9,10 +9,10 @@ import JavaScriptCore
 import BleTransport
 
 public struct BridgeError: Error {
-    let id: String?
-    let name: String
-    let message: String
-    let statusCode: Int?
+    public let id: String?
+    public let name: String
+    public let message: String
+    public let statusCode: Int?
     
     static func fromJSValue(_ jsValue: JSValue) -> Error {
         guard let dict = jsValue.toDictionary() else { return BleTransportError.lowerLevelError(description: jsValue.debugDescription) }
