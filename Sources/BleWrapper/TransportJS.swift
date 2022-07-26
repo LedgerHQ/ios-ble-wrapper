@@ -32,7 +32,7 @@ typealias JSValueBlock = (@convention(block) (JSValue) -> Void)
                 case .success(let response):
                     callback.call(withArguments: [response.UInt8Array(), ""])
                 case .failure(let error):
-                    callback.call(withArguments: ["", "ERROR: \(error.description())"])
+                    callback.call(withArguments: ["", "ERROR: \(error.localizedDescription)"])
                 }
             }
         }
@@ -49,7 +49,7 @@ typealias JSValueBlock = (@convention(block) (JSValue) -> Void)
                 case .success(let response):
                     callback.call(withArguments: [response.UInt8Array(), ""])
                 case .failure(let error):
-                    callback.call(withArguments: ["", "ERROR: \(error.description())"])
+                    callback.call(withArguments: ["", "ERROR: \(error.localizedDescription)"])
                 }
             }
         }

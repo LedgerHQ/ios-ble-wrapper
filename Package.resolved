@@ -6,7 +6,7 @@
       "location" : "https://github.com/harrisonf-ledger/bluejay",
       "state" : {
         "branch" : "multiplatform",
-        "revision" : "17cfe41aaaa9181e26eaf5eacf193c8f96b9e3d8"
+        "revision" : "e6d1dbb346a13f81fee3e86769199d6c36f2c8b7"
       }
     },
     {
@@ -15,7 +15,7 @@
       "location" : "https://github.com/LedgerHQ/hw-transport-ios-ble",
       "state" : {
         "branch" : "main",
-        "revision" : "6d1d0a74a5f64e875e2fda55bd5f2055955d3946"
+        "revision" : "86b6cfb033f78bc213e9de3a184437873fd1c2a1"
       }
     }
   ],
