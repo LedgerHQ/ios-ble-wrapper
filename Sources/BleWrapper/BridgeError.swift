@@ -26,17 +26,17 @@ public struct BridgeError: Error {
         return BridgeError(id: id, name: name, message: message, statusCode: statusCode)
     }
     
-    public static func fromEnum(_ enumValue: Error) -> Error {
-        if let enumValue = enumValue as? BleTransportError {
-            return BridgeError(id: nil, name: "TransportError", message: enumValue.localizedDescription, statusCode: nil)
-        } else if let enumValue = enumValue as? BleStatusError {
+    public static func fromError(_ error: Error) -> Error {
+        if let error = error as? BleTransportError {
+            return BridgeError(id: nil, name: "TransportError", message: error.localizedDescription, statusCode: nil)
+        } else if let error = error as? BleStatusError {
             var status: Int?
-            if let enumStatus = enumValue.status() {
+            if let enumStatus = error.status() {
                 status = Int(enumStatus)
             }
-            return BridgeError(id: nil, name: "TransportStatusError", message: enumValue.localizedDescription, statusCode: status)
+            return BridgeError(id: nil, name: "TransportStatusError", message: error.localizedDescription, statusCode: status)
         } else {
-            return enumValue
+            return error
         }
     }
 }
