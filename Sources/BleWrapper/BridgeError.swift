@@ -31,8 +31,8 @@ public struct BridgeError: Error {
             return BridgeError(id: nil, name: "TransportError", message: error.localizedDescription, statusCode: nil)
         } else if let error = error as? BleStatusError {
             var status: Int?
-            if let enumStatus = error.status() {
-                status = Int(enumStatus)
+            if let errorStatus = error.status() {
+                status = Int(errorStatus, radix: 16)
             }
             return BridgeError(id: nil, name: "TransportStatusError", message: error.localizedDescription, statusCode: status)
         } else {
