@@ -14,7 +14,8 @@ public struct BridgeError: Error {
     public let message: String
     public let statusCode: Int?
     
-    static func fromJSValue(_ jsValue: JSValue) -> Error {
+    // MARK: - Static methods
+    public static func fromJSValue(_ jsValue: JSValue) -> Error {
         guard let dict = jsValue.toDictionary() else { return BleTransportError.lowerLevelError(description: jsValue.debugDescription) }
         guard let name = dict["name"] as? String else { return BleTransportError.lowerLevelError(description: jsValue.debugDescription) }
         guard let message = dict["message"] as? String else { return BleTransportError.lowerLevelError(description: jsValue.debugDescription) }
@@ -23,5 +24,19 @@ public struct BridgeError: Error {
         let statusCode = dict["statusCode"] as? Int
         
         return BridgeError(id: id, name: name, message: message, statusCode: statusCode)
+    }
+    
+    public static func fromEnum(_ enumValue: Error) -> Error {
+        if let enumValue = enumValue as? BleTransportError {
+            return BridgeError(id: nil, name: "TransportError", message: enumValue.localizedDescription, statusCode: nil)
+        } else if let enumValue = enumValue as? BleStatusError {
+            var status: Int?
+            if let enumStatus = enumValue.status() {
+                status = Int(enumStatus)
+            }
+            return BridgeError(id: nil, name: "TransportStatusError", message: enumValue.localizedDescription, statusCode: status)
+        } else {
+            return enumValue
+        }
     }
 }
