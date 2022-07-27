@@ -28,10 +28,10 @@ public struct BridgeError: Error {
     
     public static func fromError(_ error: Error) -> Error {
         if let error = error as? BleTransportError {
-            return BridgeError(id: nil, name: "TransportError", message: error.localizedDescription, statusCode: nil)
+            return BridgeError(id: error.id, name: "TransportError", message: error.localizedDescription, statusCode: nil)
         } else if let error = error as? BleStatusError {
             var status: Int?
-            if let errorStatus = error.status() {
+            if let errorStatus = error.status {
                 status = Int(errorStatus, radix: 16)
             }
             return BridgeError(id: nil, name: "TransportStatusError", message: error.localizedDescription, statusCode: status)
