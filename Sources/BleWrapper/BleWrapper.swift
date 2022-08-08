@@ -45,11 +45,22 @@ open class BleWrapper {
     }
     
     open func openAppIfNeeded(_ name: String, completion: @escaping (Result<Void, Error>) -> Void) {
-        BleTransport.shared.openAppIfNeeded(name, completion: completion)
+        BleTransport.shared.openAppIfNeeded(name) { result in
+            switch result {
+            case .success(_):
+                completion(.success(()))
+            case .failure(let error):
+                completion(.failure(BridgeError.fromError(error)))
+            }
+        }
     }
     
     open func getAppAndVersion(success: @escaping ((AppInfo) -> ()), failure: @escaping ErrorResponse) {
-        BleTransport.shared.getAppAndVersion(success: success, failure: failure)
+        BleTransport.shared.getAppAndVersion { result in
+            success(result)
+        } failure: { error in
+            failure(BridgeError.fromError(error))
+        }
     }
     
     public func jsValueAsError(_ jsValue: JSValue) -> Error {
@@ -60,10 +71,18 @@ open class BleWrapper {
 /// Async implementations
 extension BleWrapper {
     open func openAppIfNeeded(_ name: String) async throws {
-        return try await BleTransport.shared.openAppIfNeeded(name)
+        do {
+            return try await BleTransport.shared.openAppIfNeeded(name)
+        } catch {
+            throw BridgeError.fromError(error)
+        }
     }
     
     open func getAppAndVersion() async throws -> AppInfo {
-        return try await BleTransport.shared.getAppAndVersion()
+        do {
+            return try await BleTransport.shared.getAppAndVersion()
+        } catch {
+            throw BridgeError.fromError(error)
+        }
     }
 }
