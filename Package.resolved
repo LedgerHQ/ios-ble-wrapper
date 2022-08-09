@@ -14,8 +14,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/LedgerHQ/hw-transport-ios-ble",
       "state" : {
-        "branch" : "main",
-        "revision" : "d75ea41e910f44d824642c66267c38806a015868"
+        "branch" : "CoreBluetooth",
+        "revision" : "4df34211d17e4f10909d744b6c368760f3ad4a57"
       }
     }
   ],
