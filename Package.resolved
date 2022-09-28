@@ -1,21 +1,12 @@
 {
   "pins" : [
     {
-      "identity" : "bluejay",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/harrisonf-ledger/bluejay",
-      "state" : {
-        "branch" : "multiplatform",
-        "revision" : "e6d1dbb346a13f81fee3e86769199d6c36f2c8b7"
-      }
-    },
-    {
       "identity" : "hw-transport-ios-ble",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/LedgerHQ/hw-transport-ios-ble",
       "state" : {
         "branch" : "CoreBluetooth",
-        "revision" : "4df34211d17e4f10909d744b6c368760f3ad4a57"
+        "revision" : "be7ec54987cce2b9c77651b39961ab1425ead882"
       }
     }
   ],
