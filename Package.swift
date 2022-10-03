@@ -15,7 +15,7 @@ let package = Package(
             targets: ["BleWrapper"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/LedgerHQ/hw-transport-ios-ble", branch: "CoreBluetooth")
+        .package(url: "https://github.com/LedgerHQ/hw-transport-ios-ble", exact: "1.0.0")
     ],
     targets: [
         .target(
