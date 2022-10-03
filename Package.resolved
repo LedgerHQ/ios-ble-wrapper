@@ -6,7 +6,7 @@
       "location" : "https://github.com/LedgerHQ/hw-transport-ios-ble",
       "state" : {
         "branch" : "CoreBluetooth",
-        "revision" : "be7ec54987cce2b9c77651b39961ab1425ead882"
+        "revision" : "32eb442a20e1f06973de7fadf1dcd8553e95e005"
       }
     }
   ],
