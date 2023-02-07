@@ -12,7 +12,6 @@ import JavaScriptCore
 @objc public protocol ErrorJSProtocol: JSExport {
     var name: String? { get set }
     var message: String? { get set }
-    var stack: [JSValue] { get }
     var fileName: String? { get }
     var lineNumber: Int { get }
     var columnNumber: Int { get }
@@ -26,9 +25,6 @@ import JavaScriptCore
     
     public var name: String?
     public var message: String?
-    
-    public var stack: [JSValue] = [JSValue]()
-    
     public var fileName: String?
     public var lineNumber: Int = 0
     public var columnNumber: Int = 0
