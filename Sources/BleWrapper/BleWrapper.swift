@@ -70,7 +70,7 @@ open class BleWrapper {
 
 /// Async implementations
 extension BleWrapper {
-    open func openAppIfNeeded(_ name: String) async throws {
+    public func openAppIfNeeded(_ name: String) async throws {
         do {
             return try await BleTransport.shared.openAppIfNeeded(name)
         } catch {
@@ -78,7 +78,7 @@ extension BleWrapper {
         }
     }
     
-    open func getAppAndVersion() async throws -> AppInfo {
+    public func getAppAndVersion() async throws -> AppInfo {
         do {
             return try await BleTransport.shared.getAppAndVersion()
         } catch {
