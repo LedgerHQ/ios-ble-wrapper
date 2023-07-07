@@ -16,7 +16,7 @@ public struct BridgeError: Error {
     
     // MARK: - Static methods
     public static func fromJSValue(_ jsValue: JSValue) -> Error {
-        guard let dict = jsValue.toDictionary() else { return BleTransportError.lowerLevelError(description: jsValue.debugDescription) }
+        guard jsValue.isObject, let dict = jsValue.toDictionary() else { return BleTransportError.lowerLevelError(description: jsValue.debugDescription) }
         guard let name = dict["name"] as? String else { return BleTransportError.lowerLevelError(description: jsValue.debugDescription) }
         guard let message = dict["message"] as? String else { return BleTransportError.lowerLevelError(description: jsValue.debugDescription) }
         
